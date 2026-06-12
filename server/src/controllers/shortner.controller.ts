@@ -13,11 +13,12 @@ export const listUrlsHandler = async (req: Request, res: Response) => {
     res.json(new ApiResponse(200, "Successfully Listed all the URLs", data));
 }
 
-// export const analyticsHandler = async (req: Request, res: Response) => {
-//     const { url }: { url: string } = req.body;
-//     const data = await urlShortnerService.shortenUrl(url);
-//     res.json(new ApiResponse(200, "Successfully fetch URLs click analytics data", data));
-// }
+export const analyticsHandler = async (req: Request, res: Response) => {
+    const { code } = req.params;
+    console.log("analytics", code);
+    const data = await urlShortnerService.getUrlAnalytics(code);
+    res.json(new ApiResponse(200, "Successfully fetch URLs click analytics data", data));
+}
 
 export const redirectHandler = async (req: Request, res: Response) => {
     const { code } = req.params;

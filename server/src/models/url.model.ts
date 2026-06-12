@@ -1,6 +1,6 @@
 import { db } from "../database/db";
 import { urlsTable, clicksTable } from "../database/schema";
-import {eq} from "drizzle-orm"
+import {  eq, and, gte, sql } from "drizzle-orm";
 
 export async function saveUrlMapping(shortCode: string, originalUrl: string): Promise<void> {
   await db.insert(urlsTable).values({
@@ -29,4 +29,34 @@ export async function recordClick(code: string): Promise<void> {
   await db.insert(clicksTable).values({
     shortCode: code,
   });
+}
+
+// export async function getUrlAnalytics(code: any){
+//   const result = await db.select({}).from(clicksTable).where(eq(clicksTable.shortCode, code));
+//   return result ? result : null;
+// }
+
+
+
+
+export async function getUrlAnalytics(code: string) {
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+  const result = await db
+    .select({
+      date: sql<string>`date_trunc('day', ${clicksTable.clickedAt})::date`,
+      clickCount: sql<number>`count(${clicksTable.id})::int`,
+    })
+    .from(clicksTable)
+    .where(
+      and(
+        eq(clicksTable.shortCode, code),
+        gte(clicksTable.clickedAt, sevenDaysAgo)
+      )
+    )
+    .groupBy(sql`date_trunc('day', ${clicksTable.clickedAt})`)
+    .orderBy(sql`date_trunc('day', ${clicksTable.clickedAt})`);
+
+  return result ? result : null;
 }

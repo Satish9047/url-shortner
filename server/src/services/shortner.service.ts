@@ -21,3 +21,8 @@ export const getAllUrls = async ()=>{
     const data = await urlModel.getAllUrls();
     return data;
 }
+
+export const getUrlAnalytics =async(code:any)=>{
+    const data =  await urlModel.getUrlAnalytics(code);
+    return data;
+}

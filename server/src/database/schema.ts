@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, integer, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, integer, uuid, varchar } from 'drizzle-orm/pg-core';
 
 export const urlsTable = pgTable('urls', {
   shortCode: text('short_code').primaryKey(),
@@ -12,4 +12,11 @@ export const clicksTable = pgTable('clicks', {
     .notNull()
     .references(() => urlsTable.shortCode, { onDelete: 'cascade' }),
   clickedAt: timestamp('clicked_at').defaultNow().notNull(),
+});
+
+export const rateLimitsTable = pgTable('rate_limits', {
+  ipAddress: varchar('ip_address', { length: 45 }).primaryKey(),
+  requestCount: integer('request_count').default(0).notNull(),
+  resetAt: timestamp('reset_at', { withTimezone: true }).notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });

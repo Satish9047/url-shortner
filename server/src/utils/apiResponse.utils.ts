@@ -22,15 +22,18 @@ export class ApiResponse<T> {
  * @description                 ApiError class
  * @param           {number}    status
  * @param           {string}    message
+ * @param           {T}         data
  */
-export class ApiError extends Error {
+export class ApiError<T> extends Error {
   status: number;
   message: string;
   success: boolean;
-  constructor(status: number, message: string) {
+  data: T | undefined;
+  constructor(status: number, message: string, data?: T) {
     super(message);
     this.status = status;
     this.message = message;
     this.success = status >= 200 && status < 300;
+    this.data = data;
   }
 }

@@ -5,6 +5,6 @@ import { shortUrlHandler } from "../controllers/shortner.controller";
 
 const shortUrlRouter = Router();
 
-shortUrlRouter.post("/", validateData(urlSchema), shortUrlHandler);
+shortUrlRouter.post("/", shortUrlHandler);
 
 export default shortUrlRouter;

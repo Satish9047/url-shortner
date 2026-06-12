@@ -6,6 +6,7 @@ export const validateData = (schema: z.ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       schema.parse(req.body);
+      console.log("req body", req.body)
       next();
     } catch (error) {
         if (error instanceof ZodError) {

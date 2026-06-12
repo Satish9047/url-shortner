@@ -1,8 +1,9 @@
 import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
-import {appConfig} from './configs/app.config';
-import app from './app'; 
+import { appConfig } from './configs/app.config';
+import app from './app';
+import { db } from './database/db';
 
 const PORT = appConfig.PORT;
 
@@ -13,14 +14,14 @@ if (!appConfig.DATABASE_URL) {
 }
 
 // Initialize Drizzle ORM with Neon database client
-const client = neon(appConfig.DATABASE_URL);
-export const db = drizzle({ client });
+// const client = neon(appConfig.DATABASE_URL);
+// export const db = drizzle({ client });
 
 // Start the server after ensuring database connectivity
 async function startServer() {
   try {
     console.log('connecting to database');
-    await db.execute(sql`SELECT 1`);  
+    await db.execute(sql`SELECT 1`);
     console.log('Connected to database successfully');
     // Start Express server
     app.listen(PORT, () => {

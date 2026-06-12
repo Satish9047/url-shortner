@@ -11,6 +11,9 @@ export const shortenUrl = async (url: string) => {
 
 export const getOriginalURL = async (code: any)=>{
     const data = await urlModel.getOriginalUrl(code);
+    if (data) {
+    await urlModel.recordClick(code);
+  }
     return data;
 }
 

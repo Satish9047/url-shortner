@@ -29,7 +29,7 @@ async function startServer() {
     });
 
   } catch (error) {
-    console.error('Failed to connect to database:', error instanceof Error ? error.message : error);
+    console.error('Failed to connect database:', error instanceof Error ? error.message : error);
     process.exit(1);
   }
 }

@@ -3,6 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import apiRouter from './routes/route';
+import { redirectHandler } from "./controllers/shortner.controller";
 
 const app: Application = express();
 
@@ -21,6 +22,7 @@ app.get('/api/v1/test', (req: Request, res: Response) => {
 });
 
 app.use('/api/v1', apiRouter);
+app.get("/:code", redirectHandler);
 
 // Centralized Global Error Handling Middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

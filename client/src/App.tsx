@@ -1,11 +1,12 @@
-import './App.css'
+import "./App.css";
+import Home from "./pages/home/Home";
 
 function App() {
   return (
-      <section className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-        <p>Hello world</p>
-      </section>
-  )
+    <div>
+      <Home />
+    </div>
+  );
 }
 
 export default App;

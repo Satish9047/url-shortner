@@ -33,7 +33,7 @@ export class ApiError<T> extends Error {
     super(message);
     this.status = status;
     this.message = message;
-    this.success = status >= 200 && status < 300;
     this.data = data;
+    this.success = status >= 200 && status < 300;
   }
 }

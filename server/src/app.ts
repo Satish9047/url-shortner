@@ -16,8 +16,10 @@ app.use(morgan('dev'));
 
 app.get('/api/v1/test', (req: Request, res: Response) => {
   res.status(200).json({ 
-    status: 'success', 
-    message: 'express server is working properly' 
+    status: 'success',
+    message: "express server is running as expected",
+    data: null,
+    success: true,
   });
 });
 
@@ -25,12 +27,17 @@ app.use('/api/v1', apiRouter);
 app.get("/:code", redirectHandler);
 
 // Centralized Global Error Handling Middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error('Global Error:', err.message);
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error('Global Error:', error.message);
 
-  res.status(500).json({
+  const status = 'status' in error && typeof (error as any).status === 'number' ? (error as any).status : 500;
+  const data = 'data' in error ? (error as any).data : null;
+
+  res.status(status).json({
     status: 'error',
-    message: err.message || 'Internal Server Error'
+    message: error.message || 'Internal Server Error',
+    data: data ?? null,
+    success: false,
   });
 });
 

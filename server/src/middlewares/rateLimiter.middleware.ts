@@ -59,8 +59,8 @@ export const customRateLimiter = async (
       return next(
         new ApiError(
           429,
-          `Too Many Requests ${secondsRemaining}`,
-          { secondsRemaining },
+          `Too Many Requests Rate limit exceeded.`,
+          { secondsRemaining: secondsRemaining },
         )
       );
     }

@@ -50,3 +50,4 @@ coverage/
 # OS generated files
 .DS_Store
 Thumbs.db
+api_documentation.md

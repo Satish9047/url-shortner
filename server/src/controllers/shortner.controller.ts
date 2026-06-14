@@ -23,5 +23,8 @@ export const analyticsHandler = async (req: Request, res: Response) => {
 export const redirectHandler = async (req: Request, res: Response) => {
     const { code } = req.params;
     const data = await urlShortnerService.getOriginalURL(code);
-    res.json(new ApiResponse(302, "Got URL to redirect", data));
+    if(data){
+        res.redirect(302, data);
+        // res.json(new ApiResponse(302, "Got URL to redirect", data));
+    }
 }

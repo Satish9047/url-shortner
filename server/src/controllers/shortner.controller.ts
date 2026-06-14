@@ -17,6 +17,7 @@ export const analyticsHandler = async (req: Request, res: Response) => {
     const { code } = req.params;
     console.log("analytics", code);
     const data = await urlShortnerService.getUrlAnalytics(code);
+    console.log(data);
     res.json(new ApiResponse(200, "Successfully fetch URLs click analytics data", data));
 }
 

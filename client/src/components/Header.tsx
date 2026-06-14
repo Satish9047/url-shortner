@@ -1,13 +1,4 @@
-// import { UserRole } from '../types';
 import { Link, Outlet } from "react-router-dom";
-
-// interface HeaderProps {
-//   onLoginClick: () => void;
-//   currentUser: { email: string; role: UserRole } | null;
-//   onLogout: () => void;
-//   activeTab: string;
-//   setActiveTab: (tab: string) => void;
-// }
 
 export default function Header() {
   const menus = ["home", "analytic"];
@@ -15,7 +6,6 @@ export default function Header() {
   return (
     <>
       <header className="flex justify-between items-center px-6 md:px-12 w-full fixed top-0 z-50 bg-[#f9f9f9] h-16 border-b border-black">
-        {/* Brand logo: GREPSR */}
         <div className="font-sans text-2xl font-black tracking-tighter text-black uppercase cursor-pointer hover:opacity-85 select-none">
           Url Shortener
         </div>

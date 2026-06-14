@@ -1,66 +1,184 @@
+import { useState, useEffect } from "react";
+import { constants } from "../constants";
+import type {ErrorResponse} from "../interface"
+
+
 export default function Shortern() {
+  const [url, setUrl] = useState("");
+  const [shortUrl, setShortUrl] = useState("");
+  const [originalUrl, setOriginalUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<ErrorResponse | null>(null);
+  const [countdown, setCountdown] = useState<number | null>(null);
+
+  useEffect(() => {
+    let timer: number;
+
+    if (countdown !== null && countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev === null || prev <= 1) {
+            setError(null);
+            return null;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [countdown]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    setCountdown(null);
+
+    try {
+      const response = await fetch(`${constants.API_BASE_URL}/short-url`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url: url.trim() }),
+      });
+      const res = await response.json();
+
+      if (response.ok) {
+        setShortUrl(res.data);
+        setOriginalUrl(url.trim());
+        setUrl("");
+        console.log("data from server", res);
+      } else {
+        const secondsRemaining = res.data?.secondsRemaining;
+        setError({
+          message: res.message || "Something went wrong",
+          data: res.data,
+          status: res.status,
+          success: res.success,
+        });
+
+        if (
+          secondsRemaining &&
+          (res.message?.includes("Rate limit") ||
+            res.message?.includes("Too Many Requests"))
+        ) {
+          setCountdown(secondsRemaining);
+        }
+        setShortUrl("");
+        setOriginalUrl("");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      setError({
+        message: "Failed to connect to server. Please check your connection.",
+      });
+      setShortUrl("");
+      setOriginalUrl("");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(shortUrl);
+  };
+
   return (
     <div className="flex flex-col gap-6 w-full">
       <h1 className="font-heading-lg text-4xl md:text-5xl font-black leading-none tracking-tighter uppercase max-w-2xl text-white select-none">
         SHORTEN. TRACK. ANALYZE.
       </h1>
-      <form className="flex flex-col gap-4 w-full">
-        {/* Main interactive Input element */}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
+        {/* Url input section */}
         <div className="relative border-2 border-white bg-transparent flex flex-col md:flex-row items-stretch">
           <input
             id="url-input"
             type="text"
             required
             placeholder="PASTE YOUR LONG URL HERE..."
-            className="w-full bg-transparent p-6 font-mono text-[15px] text-white placeholder-zinc-600 focus:outline-none border-b-2 md:border-b-0 border-white md:border-r-0 uppercase"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            disabled={isLoading}
+            className="w-full bg-transparent p-6 font-mono text-[15px] text-white placeholder-zinc-600 focus:outline-none border-b-2 md:border-b-0 border-white md:border-r-0 uppercase disabled:opacity-50"
           />
           <button
             id="shorten-submit-btn"
             type="submit"
-            disabled
-            className="cursor-not-allowed px-10 font-bold text-xs tracking-widest transition-all uppercase flex items-center justify-center min-h-16 md:min-h-auto bg-zinc-700 text-zinc-400"
+            disabled={!url || isLoading || countdown !== null}
+            className="px-10 font-bold text-xs tracking-widest animate-pulse transition-all uppercase flex items-center justify-center min-h-16 md:min-h-auto bg-zinc-700 text-zinc-400 hover:bg-zinc-300 active:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            SHORTEN
+            {isLoading
+              ? "SHORTENING..."
+              : countdown !== null
+                ? "LOADING..."
+                : "SHORTEN"}
           </button>
         </div>
       </form>
 
       {/* Generated Link Result Section */}
-      <div
-        className="bg-[#292524] p-6 border-l-4 border-white flex flex-col md:flex-row md:items-center justify-between gap-6 animate-fade-in"
-        id="generated-link-card"
-      >
-        <div className="flex flex-col gap-1 min-w-0 flex-1">
-          <span className="font-sans text-[10px] tracking-widest text-zinc-400 font-extrabold select-none">
-            GENERATED LINK
-          </span>
-          <div className="flex items-baseline gap-2">
-            <span className="font-mono text-2xl md:text-3xl font-bold text-white selection:bg-white selection:text-black">
-              short link
+      {shortUrl && originalUrl && !error && (
+        <div
+          className="bg-[#292524] p-6 border-l-4 border-white flex flex-col md:flex-row md:items-center justify-between gap-6 animate-fade-in"
+          id="generated-link-card"
+        >
+          <div className="flex flex-col gap-1 min-w-0 flex-1">
+            <span className="font-sans text-[10px] tracking-widest text-zinc-400 font-extrabold select-none">
+              GENERATED LINK
             </span>
-            <span className="font-mono text-[10px] text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded-none uppercase select-none">
-              ACTIVE
+            <div className="flex items-baseline gap-2">
+              <a
+                href={shortUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-2xl md:text-3xl font-bold text-white hover:text-zinc-300 transition-colors selection:bg-white selection:text-black break-all"
+              >
+                {shortUrl}
+              </a>
+            </div>
+            <p className="font-mono text-[11px] text-zinc-500 truncate max-w-full selection:bg-white selection:text-black mt-1">
+              {originalUrl}
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              copyLink();
+            }}
+            className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-mono text-xs tracking-wider uppercase transition-colors"
+          >
+            COPY
+          </button>
+        </div>
+      )}
+
+      {/* Error section */}
+      {error && (
+        <div
+          className={`${
+            countdown !== null ? "bg-[#DC2626] animate-pulse" : "bg-[#DC2626]"
+          } text-white p-4 flex items-center justify-between border-l-4 border-white`}
+          id="error-banner"
+        >
+          <div className="flex items-center gap-3">
+            <span className="font-sans text-xs md:text-sm font-black tracking-widest text-white uppercase leading-none">
+              {countdown !== null ? "RATE LIMIT EXCEEDED" : "ERROR"}
             </span>
           </div>
-          <p className="font-mono text-[11px] text-zinc-500 truncate max-w-full selection:bg-white selection:text-black mt-1">
-            original link
-          </p>
+          <div className="flex items-center gap-4">
+            <div className="font-mono text-sm md:text-base font-bold select-none text-white">
+              {error ? error.message : "Something went wrong"}
+            </div>
+            {countdown !== null && (
+              <div className="font-mono text-sm md:text-base font-bold select-none text-white">
+                {countdown}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-      <div
-        className="bg-[#DC2626] text-white p-4 flex items-center justify-between border-l-4 border-white animate-pulse"
-        id="rate-limit-exceeded-banner"
-      >
-        <div className="flex items-center gap-3">
-          {/* <AlertTriangle className="w-5 h-5 text-white shrink-0" /> */}
-          <span className="font-sans text-xs md:text-sm font-black tracking-widest text-white uppercase leading-none">
-            RATE LIMIT EXCEEDED
-          </span>
-        </div>
-        <div className="font-mono text-lg font-bold select-none text-white tracking-widest">
-          Retry after 12.00
-        </div>
-      </div>
+      )}
     </div>
   );
 }

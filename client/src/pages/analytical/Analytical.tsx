@@ -1,6 +1,28 @@
 import { useState, useEffect } from "react";
 import { constants } from "../../constants";
 import type { Link, ClickData } from "../../interface";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Analytical = () => {
   const [links, setLinks] = useState<Link[]>([]);
@@ -39,19 +61,17 @@ const Analytical = () => {
   }
 
   // Fetch analytics data for specific link
-  async function fetchLinkAnalyticsData(code: string, days?: number) {
+  async function fetchLinkAnalyticsData(code: string) {
     setIsLoadingAnalytics(true);
     setError(null);
     try {
-      const response = await fetch(
-        `${constants.API_BASE_URL}/analytics/${code}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
+      const url = `${constants.API_BASE_URL}/analytics/${code}`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+      });
       const res = await response.json();
       console.log("Analytics data:", res);
 
@@ -70,20 +90,89 @@ const Analytical = () => {
     }
   }
 
-  // fetch links on component mount
+  // Fetch links on component mount
   useEffect(() => {
     fetchAllLinks();
   }, []);
 
-  // select the link
+  // Select a link and fetch analytics for the last 7 days
   const handleLinkClick = (link: Link) => {
     setSelectedLink(link);
     fetchLinkAnalyticsData(link.shortCode);
   };
 
-  // calculate total clicks from analytics data
+  // Calculate total clicks from analytics data
   const getTotalClicks = () => {
     return analyticsData.reduce((total, item) => total + item.clickCount, 0);
+  };
+
+  // Prepare chart data from analyticsData
+  const getChartData = () => {
+    const sortedData = [...analyticsData].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+
+    const labels = sortedData.map((item) => item.date);
+    const clickCounts = sortedData.map((item) => item.clickCount);
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: "Clicks",
+          data: clickCounts,
+          borderColor: "rgb(0, 0, 0)",
+          backgroundColor: "rgba(0, 0, 0, 0.05)",
+          tension: 0.3,
+          pointBackgroundColor: "rgb(0, 0, 0)",
+          pointBorderColor: "rgb(0, 0, 0)",
+          fill: true,
+        },
+      ],
+    };
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top" as const,
+        labels: {
+          font: {
+            size: 12,
+          },
+        },
+      },
+      tooltip: {
+        mode: "index" as const,
+        intersect: false,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Number of clicks",
+          font: {
+            size: 12,
+          },
+        },
+        ticks: {
+          stepSize: 1,
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: "Date",
+          font: {
+            size: 12,
+          },
+        },
+      },
+    },
   };
 
   return (
@@ -152,7 +241,7 @@ const Analytical = () => {
                 <h2 className="text-2xl font-bold text-black mb-2 break-all">
                   {selectedLink.originalUrl}
                 </h2>
-                <div className="flex items-center gap-4 flex-shrink-0">
+                <div className="flex items-center gap-4 shrink-0">
                   <a
                     href={selectedLink.originalUrl}
                     target="_blank"
@@ -201,26 +290,26 @@ const Analytical = () => {
                 </div>
               )}
 
-              {/* Analytics - Time Period Filters */}
+              {/* Analytics Time Period Filters */}
               <div className="flex items-center gap-4 mb-4">
                 <button
                   className="custombutton"
                   onClick={() =>
-                    fetchLinkAnalyticsData(selectedLink.shortCode, 7)
+                    fetchLinkAnalyticsData(selectedLink.shortCode)
                   }
                 >
-                  last 7 days
+                  Last 7 days
                 </button>
                 {/* <button 
                   className="custombutton"
-                  onClick={() => fetchLinkAnalyticsData(selectedLink.shortCode, 30)}
+                  onClick={() => fetchLinkAnalyticsData(selectedLink.shortCode)}
                 >
                   last 30 days
                 </button> */}
               </div>
 
               {/* Chart */}
-              <div className="border border-[#E7E5E4] p-8">
+              <div className="border border-[#E7E5E4] p-4">
                 {isLoadingAnalytics ? (
                   <div className="h-64 flex items-center justify-center">
                     <p className="text-sm uppercase text-stone-400">
@@ -230,11 +319,13 @@ const Analytical = () => {
                 ) : analyticsData.length === 0 ? (
                   <div className="h-64 flex items-center justify-center">
                     <p className="text-sm uppercase text-stone-400">
-                      No click data available
+                      No click data available for the selected period
                     </p>
                   </div>
                 ) : (
-                  <div className="h-64 flex items-end justify-between gap-2"></div>
+                  <div className="h-64 w-full">
+                    <Line data={getChartData()} options={chartOptions} />
+                  </div>
                 )}
               </div>
             </div>

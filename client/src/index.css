@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+.custombutton {
+  @apply px-2 py-1 text-xs border border-black hover:bg-black hover:text-white transition-colors;
+}

@@ -9,8 +9,13 @@ export const shortUrlHandler = async (req: Request, res: Response) => {
 };
 
 export const listUrlsHandler = async (req: Request, res: Response) => {
-  const data = await urlShortnerService.getAllUrls();
-  res.json(new ApiResponse(200, "Successfully Listed all the URLs", data));
+  const requestedPage = Number(req.query.page ?? 1);
+  const requestedLimit = Number(req.query.limit ?? 10);
+  const page = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+  const limit = Number.isInteger(requestedLimit) && requestedLimit > 0 ? requestedLimit : 10;
+
+  const data = await urlShortnerService.getAllUrls(page, limit);
+  res.json(new ApiResponse(200, "Successfully listed all the URLs", data));
 };
 
 export const analyticsHandler = async (req: Request, res: Response) => {

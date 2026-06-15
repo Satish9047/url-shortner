@@ -17,8 +17,8 @@ export const getOriginalURL = async (code: any)=>{
     return data;
 }
 
-export const getAllUrls = async ()=>{
-    const data = await urlModel.getAllUrls();
+export const getAllUrls = async (page = 1, limit = 10) => {
+    const data = await urlModel.getAllUrls(page, limit);
     return data;
 }
 

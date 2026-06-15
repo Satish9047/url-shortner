@@ -1,6 +1,6 @@
 import { db } from "../database/db";
 import { urlsTable, clicksTable } from "../database/schema";
-import {  eq, and, gte, sql } from "drizzle-orm";
+import {  eq, and, gte, sql, desc } from "drizzle-orm";
 
 export async function saveUrlMapping(shortCode: string, originalUrl: string): Promise<void> {
   await db.insert(urlsTable).values({
@@ -20,9 +20,33 @@ export async function getOriginalUrl(code: string): Promise<string | null> {
   return result[0] ? result[0].originalUrl : null;
 }
 
-export async function getAllUrls(){
-  const result = await db.select({originalUrl: urlsTable.originalUrl, shortCode: urlsTable.shortCode }).from(urlsTable)
-  return result ? result : null;
+export async function getAllUrls(page = 1, limit = 10) {
+  const offset = (page - 1) * limit;
+
+  const [countResult] = await db
+    .select({ total: sql<number>`count(*)::int` })
+    .from(urlsTable);
+
+  const urls = await db
+    .select({
+      originalUrl: urlsTable.originalUrl,
+      shortCode: urlsTable.shortCode,
+      createdAt: urlsTable.createdAt,
+    })
+    .from(urlsTable)
+    .orderBy(desc(urlsTable.createdAt))
+    .limit(limit)
+    .offset(offset);
+
+  const total = countResult?.total ?? 0;
+
+  return {
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+    data: urls,
+  };
 }
 
 export async function recordClick(code: string): Promise<void> {

@@ -9,10 +9,10 @@ export const validateData = (schema: z.ZodSchema) => {
       console.log("req body", req.body)
       next();
     } catch (error) {
-        if (error instanceof ZodError) {
-            throw new ApiError(400, error.issues?.[0]?.message ?? "Invalid data");
-        }
-        throw new ApiError(400, "Invalid data");
+      if (error instanceof ZodError) {
+        throw new ApiError(400, error.issues?.[0]?.message ?? "Invalid data");
+      }
+      throw new ApiError(400, "Invalid data");
     }
   };
 };

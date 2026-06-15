@@ -1,24 +1,27 @@
 {
   "compilerOptions": {
+    /* File Layout */
     "rootDir": "./src",
     "outDir": "./dist",
     "module": "ESNext",
+    "moduleResolution": "Bundler",
     "target": "ES2022",
-    "types": [],
+    /* Other Outputs */
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    /* Stricter Typechecking Options */
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
+    /* Recommended Options */
     "strict": true,
     "jsx": "react-jsx",
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "moduleDetection": "force"
   },
-  // --- ADD THIS BLOCK BELOW compilerOptions ---
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "drizzle.config.ts"]
+  "include": [
+    "src/**/*"
+  ]
 }

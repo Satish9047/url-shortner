@@ -25,7 +25,7 @@ The project consists of a React frontend (`client/`) and a Node/Express backend 
 3. Set up your environment variables by creating a `.env` file in the `server/` directory:
    ```env
    PORT=3000
-   DATABASE_URL=your_postgresql_database_url
+   DATABASE_URL=your_neon_postgresql_database_url
    NODE_ENV=dev
    BASE_SHORT_URL=http://localhost:3000
    ```

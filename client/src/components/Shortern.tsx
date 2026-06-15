@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { constants } from "../constants";
-import type {ErrorResponse} from "../interface"
-
+import type { ErrorResponse } from "../interface";
+import { isValidUrl } from "../utils/urlValidation";
 
 export default function Shortern() {
   const [url, setUrl] = useState("");
@@ -32,6 +32,22 @@ export default function Shortern() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const trimmedUrl = url.trim();
+
+    if (!trimmedUrl) {
+      setError({ message: "Please enter a URL" });
+      setShortUrl("");
+      setOriginalUrl("");
+      return;
+    }
+
+    if (!isValidUrl(trimmedUrl)) {
+      setError({ message: "Invalid URL. Please enter a valid URL" });
+      setShortUrl("");
+      setOriginalUrl("");
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     setCountdown(null);
@@ -42,13 +58,13 @@ export default function Shortern() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ url: url.trim() }),
+        body: JSON.stringify({ url: trimmedUrl }),
       });
       const res = await response.json();
 
       if (response.ok) {
         setShortUrl(res.data);
-        setOriginalUrl(url.trim());
+        setOriginalUrl(trimmedUrl);
         setUrl("");
         console.log("data from server", res);
       } else {
@@ -108,7 +124,7 @@ export default function Shortern() {
             id="shorten-submit-btn"
             type="submit"
             disabled={!url || isLoading || countdown !== null}
-            className="px-10 font-bold text-xs tracking-widest animate-pulse transition-all uppercase flex items-center justify-center min-h-16 md:min-h-auto bg-zinc-700 text-zinc-400 hover:bg-zinc-300 active:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-10 font-bold text-xs tracking-widest animate-pulse transition-all uppercase flex items-center justify-center min-h-16 md:min-h-auto bg-zinc-700 text-zinc-200 hover:bg-zinc-300 active:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading
               ? "SHORTENING..."
@@ -169,7 +185,7 @@ export default function Shortern() {
           </div>
           <div className="flex items-center gap-4">
             <div className="font-mono text-sm md:text-base font-bold select-none text-white">
-              {error ? error.message : "Something went wrong"}
+              {error.message}
             </div>
             {countdown !== null && (
               <div className="font-mono text-sm md:text-base font-bold select-none text-white">

@@ -92,10 +92,12 @@ const Analytical = () => {
 
   // Fetch links on component mount
   useEffect(() => {
-    fetchAllLinks();
+    window.setTimeout(()=>{
+      fetchAllLinks();
+    })
   }, []);
 
-  // Select a link and fetch analytics for the last 7 days
+  // Select a link and fetch 
   const handleLinkClick = (link: Link) => {
     setSelectedLink(link);
     fetchLinkAnalyticsData(link.shortCode);
@@ -201,7 +203,13 @@ const Analytical = () => {
                   Loading links...
                 </p>
               </div>
-            ) : links.length === 0 ? (
+            ) : error ? (
+              <div className="p-8 text-center">
+                <p className="text-xs uppercase text-stone-500 font-medium">
+                  {error}
+                </p>
+              </div>
+            ): links.length === 0 ? (
               <div className="p-8 text-center">
                 <p className="text-xs uppercase text-stone-500 font-medium">
                   No URL redirections saved yet.

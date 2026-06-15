@@ -26,6 +26,5 @@ export const redirectHandler = async (req: Request, res: Response) => {
     const data = await urlShortnerService.getOriginalURL(code);
     if(data){
         res.redirect(302, data);
-        // res.json(new ApiResponse(302, "Got URL to redirect", data));
     }
 }

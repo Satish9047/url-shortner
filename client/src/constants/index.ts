@@ -1,4 +1,5 @@
 export const constants = {
     SHORT_BASE_URL: "http://localhost:3000",
-    API_BASE_URL: "http://localhost:3000/api/v1"
+    API_BASE_URL: "http://localhost:3000/api/v1",
+    NUMBER_OF_LINKS_PER_PAGE: 15,
 }

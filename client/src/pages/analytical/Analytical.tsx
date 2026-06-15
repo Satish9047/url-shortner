@@ -172,7 +172,7 @@ const Analytical = () => {
 
     const clickCounts = last7Days.map((date) => dataMap.get(date) || 0);
 
-    // 4. Format dates for cleaner UI labels on the chart's X-axis
+    //Format dates for cleaner UI labels on the chart's X-axis
     const labels = last7Days.map((dateStr) => {
       const dateObj = new Date(dateStr);
       return dateObj.toLocaleDateString(undefined, {

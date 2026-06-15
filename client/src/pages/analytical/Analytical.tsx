@@ -154,14 +154,32 @@ const Analytical = () => {
     return analyticsData.reduce((total, item) => total + item.clickCount, 0);
   };
 
-  // Prepare chart data from analyticsData
+  //filling missing days with 0
   const getChartData = () => {
-    const sortedData = [...analyticsData].sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
+    const last7Days: string[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateString = d.toISOString().split("T")[0];
+      last7Days.push(dateString);
+    }
 
-    const labels = sortedData.map((item) => item.date);
-    const clickCounts = sortedData.map((item) => item.clickCount);
+    const dataMap = new Map<string, number>();
+    analyticsData.forEach((item) => {
+      const formattedDate = item.date.split("T")[0];
+      dataMap.set(formattedDate, item.clickCount);
+    });
+
+    const clickCounts = last7Days.map((date) => dataMap.get(date) || 0);
+
+    // 4. Format dates for cleaner UI labels on the chart's X-axis
+    const labels = last7Days.map((dateStr) => {
+      const dateObj = new Date(dateStr);
+      return dateObj.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+      });
+    });
 
     return {
       labels,
@@ -377,17 +395,7 @@ const Analytical = () => {
 
               {/* Analytics Time Period Filters */}
               <div className="flex items-center gap-4 mb-4">
-                <p
-                  className="custombutton"
-                >
-                  Last 7 days
-                </p>
-                {/* <button 
-                  className="custombutton"
-                  onClick={() => fetchLinkAnalyticsData(selectedLink.shortCode)}
-                >
-                  last 30 days
-                </button> */}
+                <p className="custombutton">Last 7 days</p>
               </div>
 
               {/* Chart */}
@@ -399,6 +407,8 @@ const Analytical = () => {
                     </p>
                   </div>
                 ) : analyticsData.length === 0 ? (
+                  // Note: Since getChartData generates placeholder zeros now,
+                  // analyticsData.length === 0 will only trigger if the API explicitly returns an empty array.
                   <div className="h-64 flex items-center justify-center">
                     <p className="text-sm uppercase text-stone-400">
                       No click data available for the selected period

@@ -10,8 +10,8 @@ The project consists of a React frontend (`client/`) and a Node/Express backend 
 
 ### Prerequisites
 - Node.js (v18 or higher)
-- npm or yarn
-- Access to a PostgreSQL Database (connection string)
+- npm
+- Access to a Neon PostgreSQL Database (connection string)
 
 ### Running the Backend Server
 1. Navigate to the `server` directory:

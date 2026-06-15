@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ApiResponse } from "../utils/apiResponse.utils";
+import { ApiResponse, ApiError } from "../utils/apiResponse.utils";
 import * as urlShortnerService from "../services/shortner.service";
 
 export const shortUrlHandler = async (req: Request, res: Response) => {
@@ -27,4 +27,5 @@ export const redirectHandler = async (req: Request, res: Response) => {
     if(data){
         res.redirect(302, data);
     }
+    res.status(404).json(new ApiError(404, "Short URL not found"));
 }

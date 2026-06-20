@@ -4,7 +4,7 @@ import {
     createRoutesFromElements,
     RouterProvider,
 } from "react-router-dom";
-import Home from "../../pages/home/Home";
+import Home from "../../features/url-shortner/page";
 import Analytical from "../../pages/analytical/Analytical";
 import Navbar from "../../shared/components/Navbar";
 

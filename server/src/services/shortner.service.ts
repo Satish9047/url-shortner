@@ -6,7 +6,7 @@ export const shortenUrl = async (url: string) => {
     const shortCode = generateShortCode(appConfig.URL_DIGIT_NUMBER);
     const shortUrl = `${appConfig.BASE_SHORT_URL}/${shortCode}`;
     await urlModel.saveUrlMapping(shortCode, url);
-    return shortUrl;
+    return {url: shortUrl, secondsRemaining: null};
 };
 
 export const getOriginalURL = async (code: any)=>{

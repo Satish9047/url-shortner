@@ -1,5 +1,5 @@
 import { constants } from "../../../constants";
-import type {ApiResponse} from "../interface"
+import type {ApiResponse} from "../../../interface"
 
 interface shortenerApiResponse {
     url: string | null

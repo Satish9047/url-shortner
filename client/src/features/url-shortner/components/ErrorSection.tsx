@@ -1,17 +1,10 @@
 import { useEffect, useState } from "react";
-import type { ApiResponse } from "../interface";
+import type { ApiResponse } from "../../../interface";
+import type { ShortenerApiResponse } from "../interface";
 
 
-interface ShortenerApiResponse {
-  url: string | null;
-  secondsRemaining: number | null;
-}
 
-interface ErrorSectionProps {
-  errorRes: ApiResponse<ShortenerApiResponse> | null;
-}
-
-const ErrorSection = ({ errorRes }: ErrorSectionProps) => {
+const ErrorSection = ({ errorRes }: { errorRes: ApiResponse<ShortenerApiResponse> | null }) => {
   const [countdown, setCountdown] = useState<number | null>(null);
   const [displayMessage, setDisplayMessage] = useState<string | null>(null);
 

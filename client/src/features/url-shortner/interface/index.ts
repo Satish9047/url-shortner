@@ -1,6 +1,8 @@
-export interface ApiResponse<T> {
-  status: string | number | null;
-  message: string;
-  data: T;
-  success: boolean;
+export interface ShortenerApiResponse {
+    url: string | null
+    secondsRemaining: number | null;
 }
+
+// export interface ErrorSectionProps {
+//   errorRes: ApiResponse<ShortenerApiResponse> | null;
+// }

@@ -7,3 +7,9 @@ export interface ClickData {
   date: string;
   clickCount: number;
 }
+
+export interface UrlResponse {
+    originalUrl: string;
+    shortCode: string;
+    createdAt: string;
+}

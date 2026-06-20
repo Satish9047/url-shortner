@@ -9,15 +9,28 @@ export interface ClickData {
 }
 
 export interface UrlItem {
-  originalUrl: string | null;
+  originalUrl: string;
   shortCode: string | null;
   createdAt: string | null;
 }
 
 export interface UrlResponse {
-  data: UrlItem[],
-  limit: number,
-  page: number,
-  total: number,
-  totalPages: number
+  data: UrlItem[];
+  limit: number;
+  page: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface AnalyticalResonse {
+  data: ClickData[];
+}
+
+export interface UrlListProps {
+  selectedLink: UrlItem | null;
+  setSelectedLink: (link: UrlItem) => void;
+}
+
+export interface AnalyticDashboardProps {
+  selectedLink: UrlItem | null;
 }

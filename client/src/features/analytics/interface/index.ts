@@ -8,8 +8,16 @@ export interface ClickData {
   clickCount: number;
 }
 
+export interface UrlItem {
+  originalUrl: string | null;
+  shortCode: string | null;
+  createdAt: string | null;
+}
+
 export interface UrlResponse {
-    originalUrl: string;
-    shortCode: string;
-    createdAt: string;
+  data: UrlItem[],
+  limit: number,
+  page: number,
+  total: number,
+  totalPages: number
 }

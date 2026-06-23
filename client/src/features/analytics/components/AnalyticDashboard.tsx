@@ -75,7 +75,7 @@ const AnalyticDashboard = ({ selectedLink }: AnalyticDashboardProps) => {
 
           {/* Stats */}
           <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="border border-black p-4">
+            <div className="border border-black p-4 h-25">
               <p className="mb-1 text-xs uppercase tracking-wider text-stone-500">
                 Total Clicks
               </p>
@@ -84,11 +84,11 @@ const AnalyticDashboard = ({ selectedLink }: AnalyticDashboardProps) => {
               </p>
             </div>
 
-            <div className="border border-black p-4">
+            <div className="border border-black p-4 h-25">
               <p className="mb-1 text-xs uppercase tracking-wider text-stone-500">
                 Short URL
               </p>
-              <p className="break-all font-mono text-sm text-black">
+              <p className="break-all font-mono text-md text-black">
                 {constants.SHORT_BASE_URL}/{selectedLink.shortCode}
               </p>
             </div>

@@ -107,7 +107,7 @@ const AnalyticDashboard = ({ selectedLink }: AnalyticDashboardProps) => {
           </div>
 
           {/* Chart */}
-          <Chart analyticsData={analyticsData}/>
+          <Chart analyticsData={analyticsData} />
           {/* <div className="border border-[#E7E5E4] p-4">
             {isLoadingAnalytics ? (
               <div className="flex h-64 items-center justify-center">

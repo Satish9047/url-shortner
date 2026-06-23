@@ -12,16 +12,22 @@ const UrlList = ({ selectedLink, setSelectedLink }: UrlListProps) => {
   const [totalLinks, setTotalLinks] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchUrlList = async () => {
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchUrlList = async (page = 1) => {
     setIsLoading(true);
     try {
-      const res = await getUrls();
+      const res = await getUrls(page);
       console.log("data from children", res);
 
       if (res.success && res.data && res.data.total) {
         console.log("childern", res.data.data);
         setLinks(res.data.data);
         setTotalLinks(res.data.total);
+        setTotalPages(res.data.totalPages);
+        setCurrentPage(res.data.page);
         setError(null);
       } else {
         console.log(res);
@@ -48,6 +54,20 @@ const UrlList = ({ selectedLink, setSelectedLink }: UrlListProps) => {
       fetchUrlList();
     });
   }, []);
+
+  const handleNext =()=>{
+    console.log("clicked")
+    if (currentPage < totalPages) {
+      fetchUrlList(currentPage + 1);
+    }
+  }
+
+  const handlePrevious =()=>{
+        console.log("clicked")
+    if (currentPage > 1) {
+      fetchUrlList(currentPage - 1);
+    }
+  }
 
   return (
     <aside className="w-full border-r border-[#E7E5E4] bg-[#fbfbfa] md:sticky md:top-16 md:h-[calc(100vh-4rem)] md:w-[33.333%] md:self-start">
@@ -108,6 +128,32 @@ const UrlList = ({ selectedLink, setSelectedLink }: UrlListProps) => {
             ))
           )}
         </div>
+
+        {links.length > 0 && (
+              <div className="absolute bottom-0 left-0 right-0 z-10 bg-white border-t border-[#E7E5E4] p-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="text-xs uppercase tracking-wider text-stone-500">
+                    Page {currentPage} of {totalPages}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      className="custombutton disabled:opacity-40"
+                      onClick={()=>handlePrevious()}
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </button>
+                    <button
+                      className="custombutton disabled:opacity-40"
+                      onClick={()=>handleNext()}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
       </div>
     </aside>
   );

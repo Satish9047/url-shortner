@@ -1,18 +1,6 @@
-export interface ErrorResponse {
-  status?: string;
-  message?: string;
-  data?: {
-    secondsRemaining?: number;
-  };
-  success?: boolean;
-}
-
-export interface Link {
-  shortCode: string;
-  originalUrl: string;
-}
-
-export interface ClickData {
-  date: string;
-  clickCount: number;
+export interface ApiResponse<T> {
+  status: string | number | null;
+  message: string;
+  data: T;
+  success: boolean;
 }

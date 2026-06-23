@@ -4,8 +4,10 @@ import * as urlShortnerService from "../services/shortner.service";
 
 export const shortUrlHandler = async (req: Request, res: Response) => {
   const { url }: { url: string } = req.body;
+  console.log("original url",url)
   const data = await urlShortnerService.shortenUrl(url);
   res.json(new ApiResponse(200, "URL shortened successfully", data));
+  console.log("check data", data)
 };
 
 export const listUrlsHandler = async (req: Request, res: Response) => {

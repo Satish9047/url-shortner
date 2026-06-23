@@ -1,10 +1,10 @@
-import Shortern from "../../components/Shortern";
+import ShortenerForm from "./components/ShortenerForm";
 
 const Home = () => {
   return (
     <section className="flex flex-col items-center w-full justify-center min-h-screen bg-black">
       <div className="w-full max-w-5xl mx-auto px-4 md:px-8">
-        <Shortern />
+        <ShortenerForm />
       </div>
     </section>
   );

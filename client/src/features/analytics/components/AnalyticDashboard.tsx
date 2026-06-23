@@ -3,8 +3,9 @@ import type { AnalyticDashboardProps, ClickData } from "../interface";
 import type { ApiResponse } from "../../../interface";
 import getUrlData from "../api/getUrlDataApi";
 import { constants } from "../../../constants";
+import Chart from "./Chart";
 
-const AnalyticDashboard = ({selectedLink}: AnalyticDashboardProps) => {
+const AnalyticDashboard = ({ selectedLink }: AnalyticDashboardProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [analyticsData, setAnalyticsData] = useState<ClickData[]>([]);
   const [error, setError] = useState<ApiResponse<ClickData[] | null> | null>(
@@ -106,6 +107,7 @@ const AnalyticDashboard = ({selectedLink}: AnalyticDashboardProps) => {
           </div>
 
           {/* Chart */}
+          <Chart analyticsData={analyticsData}/>
           {/* <div className="border border-[#E7E5E4] p-4">
             {isLoadingAnalytics ? (
               <div className="flex h-64 items-center justify-center">

@@ -34,3 +34,8 @@ export interface UrlListProps {
 export interface AnalyticDashboardProps {
   selectedLink: UrlItem | null;
 }
+
+export interface analyticsDataProps {
+  analyticsData: ClickData[];
+}
+

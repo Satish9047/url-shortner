@@ -4,8 +4,6 @@ import type { UrlItem, UrlListProps, UrlResponse } from "../interface";
 import type { ApiResponse } from "../../../interface";
 import { constants } from "../../../constants";
 
-
-
 const UrlList = ({ selectedLink, setSelectedLink }: UrlListProps) => {
   const [links, setLinks] = useState<UrlItem[]>([]);
   const [error, setError] = useState<ApiResponse<UrlResponse | null> | null>(

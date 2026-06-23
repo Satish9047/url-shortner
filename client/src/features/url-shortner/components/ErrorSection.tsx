@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import type { ApiResponse } from "../../../interface";
 import type { ShortenerApiResponse } from "../interface";
 
-
-
 const ErrorSection = ({ errorRes }: { errorRes: ApiResponse<ShortenerApiResponse> | null }) => {
   const [countdown, setCountdown] = useState<number | null>(null);
   const [displayMessage, setDisplayMessage] = useState<string | null>(null);

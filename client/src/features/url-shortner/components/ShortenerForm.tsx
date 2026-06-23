@@ -1,12 +1,8 @@
 import { useState } from "react";
 import ErrorSection from "./ErrorSection";
 import { postOriginalUrl } from "../api/urlShortnerApi";
-import type { ApiResponse } from "../interface";
-
-interface shortenerApiResponse {
-  url: string | null;
-  secondsRemaining: number | null;
-}
+import type { ApiResponse } from "../../../interface";
+import type { ShortenerApiResponse } from "../interface";
 
 export default function ShortenerForm() {
   const [infoUrl, setInfoUrl] = useState("");
@@ -14,7 +10,7 @@ export default function ShortenerForm() {
   const [originalUrl, setOriginalUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
-  const [error, setError] = useState<ApiResponse<shortenerApiResponse> | null>(
+  const [error, setError] = useState<ApiResponse<ShortenerApiResponse> | null>(
     null,
   );
 

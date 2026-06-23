@@ -36,9 +36,11 @@ const AnalyticDashboard = ({ selectedLink }: AnalyticDashboardProps) => {
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      getAnalyticData(selectedLink?.shortCode || "");
-    });
+    if (selectedLink?.shortCode) {
+      setTimeout(() => {
+        getAnalyticData(selectedLink?.shortCode || "");
+      });
+    }
   }, [selectedLink?.shortCode]);
 
   const getTotalClicks = () => {

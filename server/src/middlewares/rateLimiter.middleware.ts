@@ -2,10 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { eq } from "drizzle-orm";
 import { db } from "../database/db";
 import { rateLimitsTable } from "../database/schema";
-import { ApiError, ApiResponse } from "../utils/apiResponse.utils";
-
-const MAX_REQUESTS = 5;
-const WINDOW_DURATION_MS = 60 * 1000; 
+import { ApiError } from "../utils/apiResponse.utils";
+import {appConfig} from "../configs/app.config";
 
 export const customRateLimiter = async (
   req: Request,
@@ -26,7 +24,7 @@ export const customRateLimiter = async (
       .limit(1);
 
     if (!record) {
-      const resetAt = new Date(now.getTime() + WINDOW_DURATION_MS);
+      const resetAt = new Date(now.getTime() + appConfig.WINDOW_DURATION_MS);
 
       await db.insert(rateLimitsTable).values({
         ipAddress: ip,
@@ -37,7 +35,7 @@ export const customRateLimiter = async (
       return next(); 
     }
     if (now > record.resetAt) {
-      const newResetAt = new Date(now.getTime() + WINDOW_DURATION_MS);
+      const newResetAt = new Date(now.getTime() + appConfig.WINDOW_DURATION_MS);
 
       await db
         .update(rateLimitsTable)
@@ -50,7 +48,7 @@ export const customRateLimiter = async (
 
       return next(); 
     }
-    if (record.requestCount >= MAX_REQUESTS) {
+    if (record.requestCount >= appConfig.MAX_REQUESTS) {
       const secondsRemaining = Math.max(
         0,
         Math.ceil((record.resetAt.getTime() - now.getTime()) / 1000),

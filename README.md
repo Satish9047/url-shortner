@@ -143,18 +143,25 @@ Generates a short alias for a given long URL.
 ### 2. List All URLs
 Retrieves a list of all shortened URLs and their original destinations.
 
-* **Endpoint**: `GET /api/v1/urls`
+* **Endpoint**: `GET /api/v1/urls` or `GET /api/v1/urls?page=1&limit=3`
 * **Success Response (200 OK)**:
   ```json
   {
     "status": 200,
     "message": "Successfully Listed all the URLs",
-    "data": [
-      {
-        "originalUrl": "https://www.google.com",
-        "shortCode": "EQbJ8d"
-      }
-    ],
+    "data": {
+        "total": 178,
+        "page": 1,
+        "limit": 10,
+        "totalPages": 18,
+        "data": [
+            {
+                "originalUrl": "https://www.youtube.com/watch?v=ZpfseYy5Hxg",
+                "shortCode": "nrLi2m",
+                "createdAt": "2026-06-20T05:27:41.377Z"
+            }
+        ]
+    },
     "success": true
   }
   ```

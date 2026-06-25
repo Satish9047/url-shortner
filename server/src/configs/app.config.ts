@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { AppConfig } from '../interfaces';
+import type { AppConfig } from '../interfaces';
 dotenv.config();
 
 export const appConfig: AppConfig = {

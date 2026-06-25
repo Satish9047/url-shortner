@@ -15,6 +15,9 @@ export const customRateLimiter = async (
     req.socket.remoteAddress ||
     "unknown";
   const now = new Date();
+  const getRestDate = ()=>{
+    return new Date(now.getTime() + appConfig.WINDOW_DURATION_MS);
+  }
 
   try {
     const [record] = await db
@@ -24,7 +27,7 @@ export const customRateLimiter = async (
       .limit(1);
 
     if (!record) {
-      const resetAt = new Date(now.getTime() + appConfig.WINDOW_DURATION_MS);
+      const resetAt = getRestDate();
 
       await db.insert(rateLimitsTable).values({
         ipAddress: ip,
@@ -34,20 +37,7 @@ export const customRateLimiter = async (
 
       return next(); 
     }
-    if (now > record.resetAt) {
-      const newResetAt = new Date(now.getTime() + appConfig.WINDOW_DURATION_MS);
-
-      await db
-        .update(rateLimitsTable)
-        .set({
-          requestCount: 1,
-          resetAt: newResetAt,
-          updatedAt: now,
-        })
-        .where(eq(rateLimitsTable.ipAddress, ip));
-
-      return next(); 
-    }
+    
     if (record.requestCount >= appConfig.MAX_REQUESTS) {
       const secondsRemaining = Math.max(
         0,
@@ -61,6 +51,21 @@ export const customRateLimiter = async (
           { url: null,  secondsRemaining: secondsRemaining },
         )
       );
+    }
+
+    if (now > record.resetAt) {
+      const newResetAt = getRestDate();
+
+      await db
+        .update(rateLimitsTable)
+        .set({
+          requestCount: 1,
+          resetAt: newResetAt,
+          updatedAt: now,
+        })
+        .where(eq(rateLimitsTable.ipAddress, ip));
+
+      return next(); 
     }
     await db
       .update(rateLimitsTable)
